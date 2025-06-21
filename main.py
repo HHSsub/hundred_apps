@@ -1,5 +1,5 @@
-# requirements.txt 파일 필요: streamlit, openai
-import os 
+# requirements.txt: streamlit, openai>=1.0.0
+import os
 
 with open("requirements.txt", encoding="utf-8") as f:
     for line in f:
@@ -7,10 +7,10 @@ with open("requirements.txt", encoding="utf-8") as f:
             os.system(f"pip install {line.strip()}")
 
 import streamlit as st
-import openai
+from openai import OpenAI
 
 # 🔑 OpenAI 키 입력
-openai.api_key = st.secrets["OPENAI_API_KEY"]  # 또는 직접 문자열로 입력해도 가능
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])  # 또는 직접 문자열로 입력 가능
 
 st.set_page_config(page_title="AI 세대차이 번역기", layout="centered")
 st.title("🧠 AI 세대차이 번역기")
@@ -34,7 +34,7 @@ if st.button("번역하기"):
 문장: {user_input}
 """
             try:
-                response = openai.ChatCompletion.create(
+                response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.7,
